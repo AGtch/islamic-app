@@ -1,12 +1,16 @@
 import 'package:dio/dio.dart';
 
 class DioClient {
+  static const int _defaultTimeoutSeconds = 15;
+
   Dio buildDioClient(String baseUrl) {
     return Dio(
       BaseOptions(
-          baseUrl: baseUrl,
-          connectTimeout: Duration(seconds: 5),
-          receiveTimeout: Duration(seconds: 5)),
+        baseUrl: baseUrl,
+        sendTimeout: const Duration(seconds: _defaultTimeoutSeconds),
+        connectTimeout: const Duration(seconds: _defaultTimeoutSeconds),
+        receiveTimeout: const Duration(seconds: _defaultTimeoutSeconds),
+      ),
     );
   }
 }

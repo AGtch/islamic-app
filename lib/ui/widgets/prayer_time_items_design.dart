@@ -12,46 +12,38 @@ class PrayerTimeItemDesign extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 1,
-      margin: EdgeInsetsDirectional.all(8),
-      child: Row(
-        children: [
-          Expanded(
-            child: Icon(
-              Icons.cloud_queue_sharp,
-              size: 28,
-              color: AppColors.mainColor,
-            ),
-          ),
-          Expanded(
-            child: Text(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Card(
+        elevation: 1,
+        margin: const EdgeInsetsDirectional.all(10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
               prayerName,
               style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w600,
                   color: AppColors.mainTextColor),
             ),
-          ),
-          Expanded(
-            child: Text(
+            Text(
               prayerTime,
               style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w400,
                   color: AppColors.mainTextColor),
             ),
-          ),
-          Expanded(
-            child: IconButton(
+            IconButton(
                 onPressed: () {},
                 icon: Icon(
                   Icons.notifications_none,
                   size: 28,
                   color: AppColors.secondTextColor,
-                )),
-          )
-        ],
+                ))
+          ],
+        ),
       ),
     );
   }

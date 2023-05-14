@@ -5,12 +5,12 @@ import 'package:bloc/bloc.dart';
 import 'new_player_timer_state.dart';
 
 class NewPlayerTimerCubit extends Cubit<NewPlayerTimerState<Duration>> {
-  NewPlayerTimerCubit() : super(TimerInitial());
+  NewPlayerTimerCubit() : super(const TimerInitial());
   StreamSubscription<int>? _timerSubscription;
 
   Stream<int> tick({required int ticks}) {
     return Stream<int>.periodic(
-        Duration(seconds: 1), (count) => ticks - count - 1).take(ticks);
+        const Duration(seconds: 1), (count) => ticks - count - 1).take(ticks);
   }
 
   void onStarted({required Duration duration}) {

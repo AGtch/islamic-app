@@ -1,24 +1,42 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:islamicapp/data/models/azkhar_model/azkhar_model.dart';
+import 'package:islamicapp/data/models/prayer_time_model/designation.dart';
+import 'package:islamicapp/data/models/prayer_time_model/gregorian.dart';
+import 'package:islamicapp/data/models/prayer_time_model/prayer_time.dart';
 import 'package:islamicapp/ui/cubit/bloc_observer.dart';
 import 'package:islamicapp/utils/helper/notification_service.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'config/injection.dart';
 import 'config/routes/app_router.dart';
 import 'constant/strings.dart';
+import 'data/models/prayer_time_model/month.dart';
+import 'data/models/prayer_time_model/week_day.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+void main() async {
   DartPluginRegistrant.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
   Bloc.observer = MyBlocObserver();
+  var dir = await getApplicationDocumentsDirectory();
+
   setupGetIt();
-  await getIt.get<NotificationService>().setup();
-  await AndroidAlarmManager.initialize();
+  getIt.get<NotificationService>().setup();
+  Hive.initFlutter(dir.path);
+  Hive.registerAdapter<PrayerTimings>(PrayerTimingsAdapter());
+  Hive.registerAdapter<DateGregorian>(DateGregorianAdapter());
+  Hive.registerAdapter<Month>(MonthAdapter());
+  Hive.registerAdapter<Weekday>(WeekdayAdapter());
+  Hive.registerAdapter<Designation>(DesignationAdapter());
+  Hive.registerAdapter<Azkhar>(AzkharAdapter());
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   runZonedGuarded(() {
     runApp(ProviderScope(

@@ -22,10 +22,10 @@ class _PrayerTimeService implements PrayerTimeService {
 
   @override
   Future<ResponsePrayerModel> getPrayerTimes(
-    latitude,
-    longitude,
-    methodToCalculatePrayerTime,
-    date,
+    double latitude,
+    double longitude,
+    int methodToCalculatePrayerTime,
+    String date,
   ) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{

@@ -4,58 +4,73 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+/// A service that handles local notifications.
 class NotificationService {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  /// Initializes the service.
   Future<void> setup() async {
-    AndroidInitializationSettings androidInitializationSetting =
-        const AndroidInitializationSettings('flutter_logo');
-    DarwinInitializationSettings iosInitializationSetting =
-        const DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-      requestCriticalPermission: true,
-    );
-    //initialize timezone package here
-    tz.initializeTimeZones(); //  <----
-
-    InitializationSettings initSettings = InitializationSettings(
-        android: androidInitializationSetting, iOS: iosInitializationSetting);
-    await _flutterLocalNotificationsPlugin.initialize(initSettings);
+    try {
+      tz.initializeTimeZones();
+      const androidInitializationSettings =
+          AndroidInitializationSettings('flutter_logo');
+      const iosInitializationSettings = DarwinInitializationSettings(
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: true,
+        requestCriticalPermission: true,
+      );
+      const initSettings = InitializationSettings(
+          android: androidInitializationSettings,
+          iOS: iosInitializationSettings);
+      await _flutterLocalNotificationsPlugin.initialize(initSettings);
+    } catch (e) {
+      // Handle exception
+      print('handle exception in init notification $e');
+    }
   }
 
+  /// Shows a local notification at the specified time.
   Future<void> showLocalNotification(
       String title, String body, DateTime time) async {
-    AndroidNotificationDetails androidNotificationDetail =
-        AndroidNotificationDetails(
-      '58', // channel Id
-      'CHANAL_NAME', // channel Name
-      channelDescription: '---------------------------',
-      channelShowBadge: true,
-      enableVibration: true,
-      when: int.parse(time.toString()),
-      importance: Importance.max,
-      priority: Priority.max,
-      autoCancel: true,
-      playSound: true,
-      icon: 'flutter_logo',
-      sound: const RawResourceAndroidNotificationSound('azan_naser'),
-      visibility: NotificationVisibility.public,
-      enableLights: true,
-      fullScreenIntent: true,
-    );
-    const iosNotificationDetail = DarwinNotificationDetails();
-    NotificationDetails notificationDetails = NotificationDetails(
-      iOS: iosNotificationDetail,
-      android: androidNotificationDetail,
-    );
-    await _flutterLocalNotificationsPlugin.zonedSchedule(
-        0, title, body, tz.TZDateTime.from(time, tz.local), notificationDetails,
+    try {
+      print('show notification ------------------------------');
+      const channelId = 'my_channel_id';
+      const channelName = 'My Channel Name';
+
+      const androidNotificationDetails = AndroidNotificationDetails(
+        channelId, // channel ID
+        channelName, // channel Name
+        channelDescription: 'Notification channel for my app',
+        importance: Importance.max,
+        priority: Priority.max,
+        playSound: true,
+        enableLights: true,
+        enableVibration: true,
+        autoCancel: true,
+        sound: RawResourceAndroidNotificationSound('azan_naser'),
+        visibility: NotificationVisibility.public,
+        fullScreenIntent: true,
+      );
+      const iosNotificationDetails = DarwinNotificationDetails();
+      const notificationDetails = NotificationDetails(
+        android: androidNotificationDetails,
+        iOS: iosNotificationDetails,
+      );
+      await _flutterLocalNotificationsPlugin.zonedSchedule(
+        0, // notification ID
+        title,
+        body,
+        tz.TZDateTime.from(time, tz.local),
+        notificationDetails,
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        payload: 'full screen');
+            UILocalNotificationDateInterpretation.wallClockTime,
+      );
+    } catch (e) {
+      // Handle exception
+      print('handle exception in calling notification $e');
+    }
   }
 }

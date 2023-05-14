@@ -6,7 +6,7 @@ import '../../../models/prayer_time_model/response_prayer_data_model.dart';
 
 part 'prayer_time_service.g.dart';
 
-@RestApi(baseUrl: baseApiUrl)
+@RestApi(baseUrl: prayerTimesBaseApiUrl)
 abstract class PrayerTimeService {
   factory PrayerTimeService(Dio dio, {String baseUrl}) = _PrayerTimeService;
 
